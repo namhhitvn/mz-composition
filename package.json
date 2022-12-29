@@ -1,0 +1,55 @@
+{
+  "name": "lib-template--name",
+  "version": "1.0.0",
+  "description": "lib-template--description",
+  "author": "lib-template--author",
+  "license": "MIT",
+  "url": "https://github.com/namhhitvn/lib-template#readme",
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.json",
+    "format": "prettier --write \"**/*.ts\"",
+    "lint": "eslint 'lib/**/*.ts' --fix",
+    "prepublish:npm": "npm run build",
+    "publish:npm": "npm publish --access public",
+    "prepublish:next": "npm run build",
+    "publish:next": "npm publish --access public --tag next",
+    "test": "jest --config ./tests/jest.json --runInBand",
+    "test:dev": "jest --config ./tests/jest.json --runInBand --watch",
+    "prerelease": "npm run build",
+    "release": "release-it",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "17.3.0",
+    "@commitlint/config-angular": "17.3.0",
+    "@types/jest": "29.2.4",
+    "@types/node": "18.11.18",
+    "@types/supertest": "2.0.12",
+    "@types/uuid": "9.0.0",
+    "@typescript-eslint/eslint-plugin": "5.47.1",
+    "@typescript-eslint/parser": "5.47.1",
+    "eslint": "8.30.0",
+    "eslint-config-prettier": "8.5.0",
+    "eslint-plugin-import": "2.26.0",
+    "husky": "8.0.2",
+    "jest": "29.3.1",
+    "lint-staged": "13.1.0",
+    "prettier": "2.8.1",
+    "release-it": "15.6.0",
+    "supertest": "6.3.3",
+    "ts-jest": "29.0.3",
+    "typeorm": "0.3.11",
+    "typescript": "4.9.4"
+  },
+  "dependencies": {
+  },
+  "peerDependencies": {
+  },
+  "lint-staged": {
+    "**/*.{ts,json}": []
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/namhhitvn/lib-template"
+  }
+}
