@@ -1,17 +1,17 @@
 ## Description
 
-...lib-template--description
+micro easy composition
 
 ## Installation
 
 ```bash
-$ npm i --save lib-template--name
+$ npm i --save ez-composition
 ```
 
 ## Quick Start
 
-...lib-template--quick-start
+...
 
 ## License
 
-lib-template--name is [MIT licensed](LICENSE).
+ez-composition is [MIT licensed](LICENSE).

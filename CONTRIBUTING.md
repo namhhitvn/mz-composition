@@ -1,1 +1,1 @@
-# Contributing to lib-template
+# Contributing to micro easy composition

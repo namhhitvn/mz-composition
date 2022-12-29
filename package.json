@@ -1,10 +1,10 @@
 {
-  "name": "lib-template--name",
+  "name": "mz-composition",
   "version": "1.0.0",
-  "description": "lib-template--description",
-  "author": "lib-template--author",
+  "description": "micro easy composition",
+  "author": "Nam Hoang <namhh.itvn@gmail.com>",
   "license": "MIT",
-  "url": "https://github.com/namhhitvn/lib-template#readme",
+  "url": "https://github.com/namhhitvn/mz-composition#readme",
   "scripts": {
     "build": "rm -rf dist && tsc -p tsconfig.json",
     "format": "prettier --write \"**/*.ts\"",
@@ -61,6 +61,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/namhhitvn/lib-template"
+    "url": "https://github.com/namhhitvn/mz-composition"
   }
 }
