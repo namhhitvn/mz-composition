@@ -11,7 +11,7 @@ describe('Test todo model', function () {
 
   beforeAll(async () => {
     mongoConnection = await connectMongoTest();
-    await mongoConnection.db.dropCollection('Todo', { dbName: 'test' });
+    await dropCollectionTodo();
 
     todoModel = TodoModel();
   });
@@ -645,4 +645,11 @@ export function expectRecordEqualTodoDocument(
   if (activeEqual !== undefined) {
     expect(record.active).toEqual(activeEqual);
   }
+}
+
+export async function dropCollectionTodo() {
+  const mongoConnection = await connectMongoTest();
+  try {
+    await mongoConnection.db.dropCollection('Todo');
+  } catch (error) {}
 }

@@ -3,7 +3,7 @@ import * as request from 'supertest';
 import { HttpStatusCode } from '../../lib';
 
 import app, { connectMongoTest } from '../node-src/main';
-import { expectRecordEqualTodoJSON } from './todo-model.spec';
+import { dropCollectionTodo, expectRecordEqualTodoJSON } from './todo-model.spec';
 
 describe('Test todo router', function () {
   let mongoConnection: mongoose.Connection;
@@ -11,7 +11,7 @@ describe('Test todo router', function () {
 
   beforeAll(async () => {
     mongoConnection = await connectMongoTest();
-    await mongoConnection.db.dropCollection('Todo', { dbName: 'test' });
+    await dropCollectionTodo();
   });
 
   test('Call GET /todo, should response 404', async () => {

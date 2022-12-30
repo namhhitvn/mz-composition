@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import {
   appBootstrap,
   connectMongo,
@@ -6,8 +7,13 @@ import {
 
 import appRestRouter from './rest.router';
 
+let mongoTestConnection: mongoose.Connection;
 export async function connectMongoTest() {
-  return await connectMongo({
+  if (mongoTestConnection) {
+    return mongoTestConnection;
+  }
+
+  mongoTestConnection = await connectMongo({
     uri: 'mongodb://root:root@localhost:27017/admin',
     connectOptions: {
       user: 'root',
@@ -15,6 +21,8 @@ export async function connectMongoTest() {
       dbName: 'test',
     },
   });
+
+  return mongoTestConnection;
 }
 
 const app = appBootstrap(
