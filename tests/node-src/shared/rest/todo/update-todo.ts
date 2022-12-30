@@ -9,7 +9,10 @@ import { Todo } from '../../interfaces';
 
 export class UpdateTodoRestRequestResponse extends HttpRestResponse<Todo> {}
 
-export class UpdateTodoRestRequestBody extends Todo {}
+export class UpdateTodoRestRequestBody implements Partial<Todo> {
+  public title?: string;
+  public active?: boolean;
+}
 
 @HttpRestRequestRepository({
   path: '/api/v1/todos/:id',

@@ -1,13 +1,12 @@
-import { RestRequestResponseOK } from '../../../../../lib/core';
+import { BaseRestController, RestRequestResponseOK } from '../../../../../lib/node';
 import { DeleteTodoRestRequest } from '../../../shared/rest/todo';
-import { RestController } from '../../../../../lib/node';
 import { DeleteTodoService } from '../service/delete-todo.service';
 
-export class DeleteTodoController extends RestController<
+export class DeleteTodoController extends BaseRestController<
   typeof DeleteTodoRestRequest
 > {
   public async handle(): Promise<void> {
-    await new DeleteTodoService().handle(this.req.params);
+    await new DeleteTodoService(this.req).exec();
     this.response(new RestRequestResponseOK());
   }
 }

@@ -9,10 +9,10 @@ import {
 import { FatalErrorException } from '../../exception';
 import type { MZCore } from '../../interfaces';
 import { MZRouter, MZRouterOptions } from '../router';
-import { RestController } from './rest.controller';
+import { BaseRestController } from './rest.controller';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface MZRouterRestOptions extends MZRouterOptions {}
+export interface MZRestRouterOptions extends MZRouterOptions {}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface MZRestRequestHandle<
@@ -53,15 +53,15 @@ const httpRestRequestMethodMap: {
   [HttpRequestMethod.HEAD]: 'head',
 };
 
-export class MZRouterRest extends MZRouter {
-  constructor(options: MZRouterRestOptions = {}) {
+export class MZRestRouter extends MZRouter {
+  constructor(options: MZRestRouterOptions = {}) {
     super(options);
   }
 
-  public handle<
+  public addRoute<
     T extends typeof HttpRestRequest<any, any, any, any, any>,
     Locals extends Record<string, any> = Record<string, any>,
-    Controller extends typeof RestController<any> = typeof RestController,
+    Controller extends typeof BaseRestController<any> = typeof BaseRestController,
   >(
     rest: T,
     ...handlers: Array<MZRestRequestHandle<T, Locals> | Controller>
@@ -86,7 +86,7 @@ export class MZRouterRest extends MZRouter {
         next();
       },
       ...handlers.map((handle) => {
-        if (!instanceOfDeep(handle, RestController)) {
+        if (!instanceOfDeep(handle, BaseRestController)) {
           return async (req: any, res: any, next: any) => {
             try {
               return await Promise.resolve((handle as any)(req, res, next));
@@ -99,7 +99,7 @@ export class MZRouterRest extends MZRouter {
         return async (req: any, res: any, next: any) => {
           try {
             await (
-              new (handle as any)(req, res, next) as RestController<any>
+              new (handle as any)(req, res, next) as BaseRestController<any>
             ).handle();
           } catch (error) {
             next(error);
@@ -107,6 +107,7 @@ export class MZRouterRest extends MZRouter {
         };
       }),
     );
+
     return this;
   }
 }

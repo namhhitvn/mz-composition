@@ -4,7 +4,7 @@ import {
   MZRestResponseInterceptor,
 } from '../../lib/node';
 
-import todoRest from './module/todo/todo-router';
+import appRestRouter from './rest.router';
 
 export async function connectMongoTest() {
   return await connectMongo({
@@ -19,7 +19,7 @@ export async function connectMongoTest() {
 
 const app = appBootstrap(
   {
-    useRouters: [todoRest],
+    useRouters: [appRestRouter],
     useInterceptors: [new MZRestResponseInterceptor()],
   },
   () => {

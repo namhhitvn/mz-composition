@@ -25,7 +25,12 @@ export abstract class MZRouter {
     }
   }
 
-  public abstract handle(
+  public addRouter(router: express.Router | MZRouter): this {
+    this.router.use('router' in router ? (router as MZRouter).router : router);
+    return this;
+  }
+
+  public abstract addRoute(
     config: any,
     ...handlers: Array<MZCore.RequestHandler<any, any, any, any, any>>
   ): this;

@@ -1,4 +1,4 @@
-import { MZRestRequestHandle, MZRouterRest } from './router-rest';
+import { MZRestRequestHandle, MZRestRouter } from './rest.router';
 import { MZInterceptor } from '../interceptor';
 import type { MZCore } from '../../interfaces';
 import * as express from 'express';
@@ -12,9 +12,9 @@ import { HttpRestResponse, HttpStatusCode } from '../../../core';
 import { isNumber } from 'lodash';
 
 export class MZRestResponseInterceptor extends MZInterceptor {
-  public handle: MZRestRequestHandle<any, any> = (_req, res, next) => {
-    this.overrideSendFunction(res, 'json');
-    this.overrideSendFunction(res, 'jsonp');
+  public handle: MZRestRequestHandle<any, any> = (req, res, next) => {
+    this.overrideSendFunction(req, res, 'json');
+    this.overrideSendFunction(req, res, 'jsonp');
 
     next();
   };
@@ -22,7 +22,7 @@ export class MZRestResponseInterceptor extends MZInterceptor {
   public override apply(app: express.Express): void {
     if (
       AppEnvironment.instance.bootstrapOptions?.useRouters?.some(
-        (msRouter) => msRouter instanceof MZRouterRest,
+        (msRouter) => msRouter instanceof MZRestRouter,
       )
     ) {
       app.use(this.handle as express.RequestHandler);
@@ -76,11 +76,16 @@ export class MZRestResponseInterceptor extends MZInterceptor {
   }
 
   private overrideSendFunction<Res extends MZCore.Response<any, any>>(
+    req: MZCore.Request<any, any, any, any, any, any>,
     res: Res,
     methodKey: keyof Res,
   ) {
     const original = res[methodKey] as express.Send;
     (res as any)[methodKey] = function (resBody?: any) {
+      if (!req.restMetadata) {
+        return original.call(this, resBody);
+      }
+
       if (!(resBody instanceof HttpRestResponse)) {
         throw new FatalErrorException('Response is invalid');
       }

@@ -1,19 +1,20 @@
-import { TodoModel } from '../../../shared/models/todo.model';
 import {
-  InternalServerErrorException,
-  throwOnMongoBuilderQueryResultError,
+  BaseRestControllerService, InternalServerErrorException,
+  throwOnMongoBuilderQueryResultError
 } from '../../../../../lib/node';
-import { GetByIdRestRequestParams } from '../../../../../lib/core';
+import { DeleteTodoRestRequest, TodoModel } from '../../../shared';
 
-export class DeleteTodoService {
-  public async handle(params: GetByIdRestRequestParams) {
-    if (!params.id) {
+export class DeleteTodoService extends BaseRestControllerService<
+  typeof DeleteTodoRestRequest
+> {
+  public async exec() {
+    if (!this.req.params.id) {
       throw new InternalServerErrorException('Invalid request');
     }
 
     const res = await TodoModel()
       .createQueryBuilder()
-      .filterObjectId(params.id)
+      .filterObjectId(this.req.params.id)
       .softDelete();
     throwOnMongoBuilderQueryResultError(res);
 

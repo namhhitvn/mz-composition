@@ -1,24 +1,21 @@
-import { TodoModel } from '../../../shared/models/todo.model';
 import {
-  InternalServerErrorException,
-  throwOnMongoBuilderQueryResultError,
+  BaseRestControllerService, InternalServerErrorException,
+  throwOnMongoBuilderQueryResultError
 } from '../../../../../lib/node';
-import { GetByIdRestRequestParams } from '../../../../../lib/core';
-import { UpdateTodoRestRequestBody } from '../../../shared/rest/todo';
+import { TodoModel, UpdateTodoRestRequest } from '../../../shared';
 
-export class UpdateTodoService {
-  public async handle(
-    params: GetByIdRestRequestParams,
-    body: UpdateTodoRestRequestBody,
-  ) {
-    if (!params.id) {
+export class UpdateTodoService extends BaseRestControllerService<
+  typeof UpdateTodoRestRequest
+> {
+  public async exec() {
+    if (!this.req.params.id) {
       throw new InternalServerErrorException('Invalid request');
     }
 
     const res = await TodoModel()
       .createQueryBuilder()
-      .filterObjectId(params.id)
-      .values(body)
+      .filterObjectId(this.req.params.id)
+      .values(this.req.body)
       .update();
     throwOnMongoBuilderQueryResultError(res);
 

@@ -1,15 +1,15 @@
+import { BaseRestController } from '../../../../../lib/node';
 import {
   GetTodoRestRequest,
-  GetTodoRestRequestResponse,
-} from '../../../shared/rest/todo';
-import { RestController } from '../../../../../lib/node';
+  GetTodoRestRequestResponse
+} from '../../../shared';
 import { GetTodoService } from '../service/get-todo.service';
 
-export class GetTodoController extends RestController<
+export class GetTodoController extends BaseRestController<
   typeof GetTodoRestRequest
 > {
   public async handle(): Promise<void> {
-    const res = await new GetTodoService().handle(this.req.params);
+    const res = await new GetTodoService(this.req).exec();
     this.response(new GetTodoRestRequestResponse(res));
   }
 }

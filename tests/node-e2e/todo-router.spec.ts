@@ -14,16 +14,26 @@ describe('Test todo router', function () {
     activeEqual?: boolean,
   ) {
     expect(record).toBeInstanceOf(Object);
+
     expect(record).toHaveProperty('_id');
     expect(record).toHaveProperty('title');
     expect(record).toHaveProperty('active');
     expect(record).toHaveProperty('createdAt');
     expect(record).toHaveProperty('updatedAt');
+
     expect(typeof record._id).toBe('string');
     expect(typeof record.title).toBe('string');
     expect(typeof record.active).toBe('boolean');
     expect(typeof record.createdAt).toBe('string');
     expect(typeof record.updatedAt).toBe('string');
+
+    expect(new Date(record.createdAt).toString()).not.toEqual('Invalid Date');
+    expect(new Date(record.updatedAt).toString()).not.toEqual('Invalid Date');
+
+    if (record.deletedAt !== undefined) {
+      expect(typeof record.deletedAt).toBe('string');
+      expect(new Date(record.deletedAt).toString()).not.toEqual('Invalid Date');
+    }
 
     if (titleEqual !== undefined) {
       expect(record.title).toEqual(titleEqual);
@@ -92,7 +102,7 @@ describe('Test todo router', function () {
     expectRecordEqualTodo(response.body.data[0], 'hello world', true);
   });
 
-  test(`Call GET /api/v1/todos/${todoIdTmp}, should response todo`, async () => {
+  test('Call GET /api/v1/todos/:id, should response todo', async () => {
     const response = await request(app).get(`/api/v1/todos/${todoIdTmp}`);
 
     expect(response.body).toBeInstanceOf(Object);
@@ -100,7 +110,20 @@ describe('Test todo router', function () {
     expectRecordEqualTodo(response.body.data, 'hello world', true);
   });
 
-  test(`Call PUT /api/v1/todos/${todoIdTmp}, should update todo from title 'hello world' to 'hello world updated'`, async () => {
+  test("Call PUT /api/v1/todos/:id, should update todo from title 'hello world' to 'hello world !!!'", async () => {
+    const response = await request(app)
+      .put(`/api/v1/todos/${todoIdTmp}`)
+      .set('Content-Type', 'application/json')
+      .send({
+        title: 'hello world !!!',
+      });
+
+    expect(response.body).toBeInstanceOf(Object);
+    expect(response.statusCode).toEqual(HttpStatusCode.OK);
+    expectRecordEqualTodo(response.body.data, 'hello world !!!', true);
+  });
+
+  test("Call PUT /api/v1/todos/:id, should update todo from title 'hello world' to 'hello world updated'", async () => {
     const response = await request(app)
       .put(`/api/v1/todos/${todoIdTmp}`)
       .set('Content-Type', 'application/json')
@@ -113,7 +136,7 @@ describe('Test todo router', function () {
     expectRecordEqualTodo(response.body.data, 'hello world updated', true);
   });
 
-  test(`Call DELETE /api/v1/todos/${todoIdTmp}, should soft remove record todo`, async () => {
+  test('Call DELETE /api/v1/todos/:id, should soft remove record todo', async () => {
     const response = await request(app).delete(`/api/v1/todos/${todoIdTmp}`);
 
     expect(response.body).toBeInstanceOf(Object);
@@ -123,16 +146,15 @@ describe('Test todo router', function () {
     expect(response.body.data.ok).toEqual(true);
   });
 
-  test(`Call GET /api/v1/todos/${todoIdTmp}, should response todo with field deletedAt`, async () => {
+  test('Call GET /api/v1/todos/:id, should response todo with field deletedAt', async () => {
     const response = await request(app).get(`/api/v1/todos/${todoIdTmp}`);
 
     expect(response.body).toBeInstanceOf(Object);
     expect(response.statusCode).toEqual(HttpStatusCode.OK);
-    expect(typeof response.body.data.deletedAt).toBe('string');
     expectRecordEqualTodo(response.body.data, 'hello world updated', true);
   });
 
-  test(`Call PUT /api/v1/todos/${todoIdTmp}/restore, should restore todo deleted`, async () => {
+  test('Call PUT /api/v1/todos/${todoIdTmp}/restore, should restore todo deleted', async () => {
     const response = await request(app).put(
       `/api/v1/todos/${todoIdTmp}/restore`,
     );
@@ -144,7 +166,7 @@ describe('Test todo router', function () {
     expect(response.body.data.ok).toEqual(true);
   });
 
-  test(`Call GET /api/v1/todos/${todoIdTmp}, should response todo with field deletedAt equal undefined`, async () => {
+  test('Call GET /api/v1/todos/:id, should response todo with field deletedAt equal undefined', async () => {
     const response = await request(app).get(`/api/v1/todos/${todoIdTmp}`);
 
     expect(response.body).toBeInstanceOf(Object);

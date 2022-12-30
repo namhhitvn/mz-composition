@@ -1,13 +1,17 @@
-import { ListTodoRestRequestQuery } from '../../../shared/rest/todo/list-todo';
-import { TodoModel } from '../../../shared/models/todo.model';
-import { throwOnMongoBuilderQueryResultError } from '../../../../../lib/node';
+import {
+  BaseRestControllerService,
+  throwOnMongoBuilderQueryResultError
+} from '../../../../../lib/node';
+import { ListTodoRestRequest, TodoModel } from '../../../shared';
 
-export class ListTodoService {
-  public async handle(query: ListTodoRestRequestQuery) {
+export class ListTodoService extends BaseRestControllerService<
+  typeof ListTodoRestRequest
+> {
+  public async exec() {
     const qb = TodoModel().createQueryBuilder();
 
-    if (query.keyword) {
-      qb.filterTitle(new RegExp(query.keyword, 'gi'));
+    if (this.req.query.keyword) {
+      qb.filterTitle(new RegExp(this.req.query.keyword, 'gi'));
     }
 
     const res = await qb.find();
