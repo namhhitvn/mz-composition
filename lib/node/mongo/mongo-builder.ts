@@ -50,23 +50,18 @@ export type IMongoBuilder<T, ResultDoc = mongoose.HydratedDocument<T>> = {
   findAndCount(): Promise<MongoBuilderQueryResult<[Array<ResultDoc>, number]>>;
   findOne(): Promise<MongoBuilderQueryResult<ResultDoc>>;
   update(): Promise<MongoBuilderQueryResult<ResultDoc>>;
-  /** @deprecated need implement */
   updateMany(): Promise<MongoBuilderQueryResult<Array<ResultDoc>>>;
   upsert(): Promise<MongoBuilderQueryResult<ResultDoc>>;
   /** @deprecated need implement */
   upsertMany(): Promise<MongoBuilderQueryResult<Array<ResultDoc>>>;
   insert(): Promise<MongoBuilderQueryResult<ResultDoc>>;
-  /** @deprecated need implement */
   insertMany(): Promise<MongoBuilderQueryResult<Array<ResultDoc>>>;
   softDelete(): Promise<MongoBuilderQueryResult<ResultDoc>>;
-  /** @deprecated need implement */
-  softDeleteMany(): Promise<MongoBuilderQueryResult<ResultDoc>>;
+  softDeleteMany(): Promise<MongoBuilderQueryResult<Array<ResultDoc>>>;
   restore(): Promise<MongoBuilderQueryResult<ResultDoc>>;
-  /** @deprecated need implement */
-  restoreMany(): Promise<MongoBuilderQueryResult<ResultDoc>>;
+  restoreMany(): Promise<MongoBuilderQueryResult<Array<ResultDoc>>>;
   delete(): Promise<MongoBuilderQueryResult<ResultDoc>>;
-  /** @deprecated need implement */
-  deleteMany(): Promise<MongoBuilderQueryResult<ResultDoc>>;
+  deleteMany(): Promise<MongoBuilderQueryResult<[]>>;
 } & {
   [key in `filter${Capitalize<
     Exclude<Extract<keyof T, string>, '_id'>
@@ -158,7 +153,7 @@ export class MongoBuilder<T, ResultDoc = mongoose.HydratedDocument<T>> {
     return this;
   }
 
-  public filterIdss(
+  public filterIds(
     ids?: string | string[],
     field: keyof T = '_id' as keyof T,
     separator = ',',
@@ -176,7 +171,7 @@ export class MongoBuilder<T, ResultDoc = mongoose.HydratedDocument<T>> {
   }
 
   public setPage(page: number, limit: number): this {
-    this._skip = page * limit;
+    this._skip = page <= 1 ? 0 : (page * limit) - limit;
     this._limit = limit;
     return this;
   }
@@ -213,6 +208,14 @@ export class MongoBuilder<T, ResultDoc = mongoose.HydratedDocument<T>> {
         ...this._select,
         ...select,
       };
+
+      for (const key in this._select) {
+        if (Object.prototype.hasOwnProperty.call(this._select, key)) {
+          if (!(this as any)._select[key]) {
+            delete (this as any)._select[key];
+          }
+        }
+      }
     }
     return this as unknown as MongoBuilder<T, ResultDoc>;
   }
@@ -300,8 +303,15 @@ export class MongoBuilder<T, ResultDoc = mongoose.HydratedDocument<T>> {
   }
 
   async updateMany(): Promise<MongoBuilderQueryResult<Array<ResultDoc>>> {
-    // TODO: [MongoBuilder] - implement method
-    return {} as any;
+    try {
+      await this.model
+        .getModel()
+        .updateMany(this._query, this._values[0], { new: true, multi: true })
+        .exec();
+      return this.find();
+    } catch (error: any) {
+      return new MongoBuilderQueryResult([], error);
+    }
   }
 
   async upsert(): Promise<MongoBuilderQueryResult<ResultDoc>> {
@@ -314,9 +324,11 @@ export class MongoBuilder<T, ResultDoc = mongoose.HydratedDocument<T>> {
     return {} as any;
   }
 
-  async insert(): Promise<MongoBuilderQueryResult<ResultDoc>> {
+  async insert(
+    value?: Partial<T>,
+  ): Promise<MongoBuilderQueryResult<ResultDoc>> {
     try {
-      const doc = this.model.newModel({ ...this._values[0] });
+      const doc = this.model.newModel(value || { ...this._values[0] });
       const val: any = await doc.save();
       return new MongoBuilderQueryResult(this.getDocument(val));
     } catch (error: any) {
@@ -324,9 +336,19 @@ export class MongoBuilder<T, ResultDoc = mongoose.HydratedDocument<T>> {
     }
   }
 
-  async insertMany(): Promise<MongoBuilderQueryResult<Array<ResultDoc>>> {
-    // TODO: [MongoBuilder] - implement method
-    return {} as any;
+  async insertMany(
+    values?: Partial<T>[],
+  ): Promise<MongoBuilderQueryResult<Array<ResultDoc>>> {
+    try {
+      const records: any = await this.model
+        .getModel()
+        .insertMany(values || this._values);
+      return new MongoBuilderQueryResult(
+        records.map((val: any) => this.getDocument(val)),
+      );
+    } catch (error: any) {
+      return new MongoBuilderQueryResult([], error);
+    }
   }
 
   async softDelete(): Promise<MongoBuilderQueryResult<ResultDoc>> {
@@ -343,9 +365,20 @@ export class MongoBuilder<T, ResultDoc = mongoose.HydratedDocument<T>> {
     }
   }
 
-  async softDeleteMany(): Promise<MongoBuilderQueryResult<ResultDoc>> {
-    // TODO: [MongoBuilder] - implement method
-    return {} as any;
+  async softDeleteMany(): Promise<MongoBuilderQueryResult<Array<ResultDoc>>> {
+    try {
+      await this.model
+        .getModel()
+        .updateMany(
+          this._query,
+          { deletedAt: new Date() },
+          { new: true, multi: true },
+        )
+        .exec();
+      return this.find();
+    } catch (error: any) {
+      return new MongoBuilderQueryResult([], error);
+    }
   }
 
   async restore(): Promise<MongoBuilderQueryResult<ResultDoc>> {
@@ -366,9 +399,20 @@ export class MongoBuilder<T, ResultDoc = mongoose.HydratedDocument<T>> {
     }
   }
 
-  async restoreMany(): Promise<MongoBuilderQueryResult<ResultDoc>> {
-    // TODO: [MongoBuilder] - implement method
-    return {} as any;
+  async restoreMany(): Promise<MongoBuilderQueryResult<Array<ResultDoc>>> {
+    try {
+      await this.model
+        .getModel()
+        .updateMany(
+          this._query,
+          { $unset: { deletedAt: 1 } },
+          { new: true, multi: true },
+        )
+        .exec();
+      return this.find();
+    } catch (error: any) {
+      return new MongoBuilderQueryResult([], error);
+    }
   }
 
   async delete(): Promise<MongoBuilderQueryResult<ResultDoc>> {
@@ -380,9 +424,13 @@ export class MongoBuilder<T, ResultDoc = mongoose.HydratedDocument<T>> {
     }
   }
 
-  async deleteMany(): Promise<MongoBuilderQueryResult<ResultDoc>> {
-    // TODO: [MongoBuilder] - implement method
-    return {} as any;
+  async deleteMany(): Promise<MongoBuilderQueryResult<[]>> {
+    try {
+      await this.model.getModel().deleteMany(this._query, { multi: true });
+      return new MongoBuilderQueryResult([]);
+    } catch (error: any) {
+      return new MongoBuilderQueryResult([], error);
+    }
   }
 
   private getDocument(val: any, def?: any) {
