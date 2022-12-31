@@ -3,7 +3,10 @@ import * as request from 'supertest';
 import { HttpStatusCode } from '../../lib';
 
 import app, { connectMongoTest } from '../node-src/main';
-import { dropCollectionTodo, expectRecordEqualTodoJSON } from './todo-model.spec';
+import {
+  dropCollectionTodo,
+  expectRecordEqualTodoJSON,
+} from './todo-model.spec';
 
 describe('Test todo router', function () {
   let mongoConnection: mongoose.Connection;

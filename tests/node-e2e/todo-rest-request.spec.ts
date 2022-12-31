@@ -12,12 +12,12 @@ import {
   GetTodoRestRequest,
   GetTodoRestRequestResponse,
   ListTodoRestRequest,
-  ListTodoRestRequestResponse,
   ListTodoRestRequestQuery,
+  ListTodoRestRequestResponse,
   RestoreTodoRestRequest,
   UpdateTodoRestRequest,
-  UpdateTodoRestRequestResponse,
   UpdateTodoRestRequestBody,
+  UpdateTodoRestRequestResponse,
 } from '../node-src/shared';
 
 describe('Test todo rest request', function () {

@@ -1,16 +1,13 @@
-import mongoose from 'mongoose';
-
-import { connectMongoTest } from '../node-src/main';
-import { Todo, TodoModel } from '../node-src/shared';
 import { toString } from 'lodash';
 import { WithRequired } from '../../lib';
+import { connectMongoTest } from '../node-src/main';
+import { Todo, TodoModel } from '../node-src/shared';
 
 describe('Test todo model', function () {
-  let mongoConnection: mongoose.Connection;
   let todoModel: ReturnType<typeof TodoModel>;
 
   beforeAll(async () => {
-    mongoConnection = await connectMongoTest();
+    await connectMongoTest();
     await dropCollectionTodo();
 
     todoModel = TodoModel();
