@@ -54,7 +54,7 @@ const httpRestRequestMethodMap: {
 };
 
 export class MZRestRouter extends MZRouter {
-  constructor(options: MZRestRouterOptions = {}) {
+  constructor(public readonly options: MZRestRouterOptions = {}) {
     super(options);
   }
 

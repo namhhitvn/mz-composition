@@ -1,0 +1,38 @@
+type Todo implements MongoBaseModelAudit {
+  _id: ID!
+  title: String!
+  active: Boolean!
+  createdAt: Date!
+  updatedAt: Date!
+  deletedAt: Date
+}
+
+type TodoListData {
+  data: [Todo]
+}
+
+input TodoListQuery {
+  keyword: String
+}
+
+input TodoBodyCreate {
+  title: String!
+  active: Boolean
+}
+
+input TodoBodyUpdate {
+  title: String
+  active: Boolean
+}
+
+type Query {
+  todoList(query: TodoListQuery): TodoListData
+  todoDetail(id: ID!): Todo
+}
+
+type Mutation {
+  todoCreate(body: TodoBodyCreate!): Todo
+  todoUpdate(id: ID!, body: TodoBodyUpdate!): Todo
+  todoDelete(id: ID!): Boolean
+  todoRestore(id: ID!): Boolean
+}

@@ -18,3 +18,7 @@ npm-debug.log
 
 # dist
 dist
+
+# graphql codegen
+**/*/graphql-resolvers-types.ts
+**/*/_final-schema.graphql

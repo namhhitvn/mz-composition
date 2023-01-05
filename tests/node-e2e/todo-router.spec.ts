@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import * as request from 'supertest';
 import { HttpStatusCode } from '../../lib';
 
@@ -9,11 +8,10 @@ import {
 } from './todo-model.spec';
 
 describe('Test todo router', function () {
-  let mongoConnection: mongoose.Connection;
   let todoIdTmp: string = 'mockId';
 
   beforeAll(async () => {
-    mongoConnection = await connectMongoTest();
+    await connectMongoTest();
     await dropCollectionTodo();
   });
 

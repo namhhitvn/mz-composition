@@ -1,0 +1,6 @@
+schema: ./tests/node-src/typedefs/_final-schema.graphql
+generates:
+  ./tests/node-src/interfaces/graphql-resolvers-types.ts:
+    plugins:
+      - typescript
+      - typescript-resolvers

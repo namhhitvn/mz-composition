@@ -30,8 +30,10 @@ export abstract class MZRouter {
     return this;
   }
 
-  public abstract addRoute(
-    config: any,
-    ...handlers: Array<MZCore.RequestHandler<any, any, any, any, any>>
-  ): this;
+  public addRoute(
+    _config: any,
+    ..._handlers: Array<MZCore.RequestHandler<any, any, any, any, any>>
+  ): this {
+    return this;
+  }
 }

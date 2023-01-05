@@ -1,7 +1,7 @@
 import { BaseRestController, HttpStatusCode } from '../../../../../lib/node';
 import {
   CreateTodoRestRequest,
-  CreateTodoRestRequestResponse
+  CreateTodoRestRequestResponse,
 } from '../../../shared';
 import { CreateTodoService } from '../service/create-todo.service';
 

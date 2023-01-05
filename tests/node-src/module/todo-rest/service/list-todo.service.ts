@@ -1,6 +1,6 @@
 import {
   BaseRestControllerService,
-  throwOnMongoBuilderQueryResultError
+  throwOnMongoBuilderQueryResultError,
 } from '../../../../../lib/node';
 import { ListTodoRestRequest, TodoModel } from '../../../shared';
 

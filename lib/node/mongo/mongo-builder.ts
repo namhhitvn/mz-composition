@@ -171,7 +171,7 @@ export class MongoBuilder<T, ResultDoc = mongoose.HydratedDocument<T>> {
   }
 
   public setPage(page: number, limit: number): this {
-    this._skip = page <= 1 ? 0 : (page * limit) - limit;
+    this._skip = page <= 1 ? 0 : page * limit - limit;
     this._limit = limit;
     return this;
   }

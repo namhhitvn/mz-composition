@@ -1,4 +1,7 @@
-import { BaseRestController, RestRequestResponseOK } from '../../../../../lib/node';
+import {
+  BaseRestController,
+  RestRequestResponseOK,
+} from '../../../../../lib/node';
 import { DeleteTodoRestRequest } from '../../../shared/rest/todo';
 import { DeleteTodoService } from '../service/delete-todo.service';
 

@@ -5,6 +5,7 @@ import {
   MZRestResponseInterceptor,
 } from '../../lib/node';
 
+import appGraphqlRouter from './graphql.router';
 import appRestRouter from './rest.router';
 
 let mongoTestConnection: mongoose.Connection;
@@ -27,7 +28,7 @@ export async function connectMongoTest() {
 
 const app = appBootstrap(
   {
-    useRouters: [appRestRouter],
+    useRouters: [appGraphqlRouter, appRestRouter],
     useInterceptors: [new MZRestResponseInterceptor()],
   },
   () => {

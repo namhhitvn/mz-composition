@@ -1,4 +1,7 @@
-import { BaseRestController, RestRequestResponseOK } from '../../../../../lib/node';
+import {
+  BaseRestController,
+  RestRequestResponseOK,
+} from '../../../../../lib/node';
 import { RestoreTodoRestRequest } from '../../../shared';
 import { RestoreTodoService } from '../service/restore-todo.service';
 

@@ -5,7 +5,7 @@ import {
   GetTodoRestRequest,
   ListTodoRestRequest,
   RestoreTodoRestRequest,
-  UpdateTodoRestRequest
+  UpdateTodoRestRequest,
 } from '../../shared';
 import { CreateTodoController } from './controller/create-todo.controller';
 import { DeleteTodoController } from './controller/delete-todo.controller';

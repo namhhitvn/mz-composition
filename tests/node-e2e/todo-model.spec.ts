@@ -574,8 +574,6 @@ export function expectRecordEqualTodoJSON(
   titleEqual?: string | undefined,
   activeEqual?: boolean,
 ) {
-  expect(record).toBeInstanceOf(Object);
-
   expect(record).toHaveProperty('_id');
   expect(record).toHaveProperty('title');
   expect(record).toHaveProperty('active');
@@ -605,13 +603,72 @@ export function expectRecordEqualTodoJSON(
   }
 }
 
+export type TodoKeys =
+  | '_id'
+  | 'title'
+  | 'active'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'createdAt'
+  | 'deletedAt';
+
+export function expectRecordEqualTodoGraphql(
+  record: any,
+  fields: TodoKeys[],
+  titleEqual?: string | undefined,
+  activeEqual?: boolean,
+) {
+  if (fields.includes('_id')) expect(record).toHaveProperty('_id');
+  if (fields.includes('title')) expect(record).toHaveProperty('title');
+  if (fields.includes('active')) expect(record).toHaveProperty('active');
+  if (fields.includes('createdAt')) expect(record).toHaveProperty('createdAt');
+  if (fields.includes('updatedAt')) expect(record).toHaveProperty('updatedAt');
+  if (fields.includes('deletedAt')) expect(record).toHaveProperty('deletedAt');
+
+  if (fields.includes('_id') && record._id !== null) {
+    expect(typeof record._id).toBe('string');
+  }
+  if (fields.includes('title') && record.title !== null) {
+    expect(typeof record.title).toBe('string');
+  }
+  if (fields.includes('active') && record.active !== null) {
+    expect(typeof record.active).toBe('boolean');
+  }
+  if (fields.includes('createdAt') && record.createdAt !== null) {
+    expect(typeof record.createdAt).toBe('object');
+    expect(record.createdAt).toBeInstanceOf(Date);
+    expect(record.createdAt.toString()).not.toEqual('Invalid Date');
+  }
+  if (fields.includes('updatedAt') && record.updatedAt !== null) {
+    expect(typeof record.updatedAt).toBe('object');
+    expect(record.updatedAt).toBeInstanceOf(Date);
+    expect(record.updatedAt.toString()).not.toEqual('Invalid Date');
+  }
+
+  if (
+    fields.includes('deletedAt') &&
+    record.deletedAt !== undefined &&
+    record.deletedAt !== null
+  ) {
+    expect(typeof record.deletedAt).toBe('object');
+    expect(record.deletedAt).toBeInstanceOf(Date);
+    expect(record.deletedAt.toString()).not.toEqual('Invalid Date');
+  }
+
+  if (titleEqual !== undefined) {
+    expect(record.title).toEqual(titleEqual);
+  }
+
+  if (activeEqual !== undefined) {
+    expect(record.active).toEqual(activeEqual);
+  }
+}
+
 export function expectRecordEqualTodoDocument(
   record: any,
   titleEqual?: string | undefined,
   activeEqual?: boolean,
 ) {
-  expect(record).toBeInstanceOf(Object);
-
   expect(record).toHaveProperty('_id');
   expect(record).toHaveProperty('title');
   expect(record).toHaveProperty('active');

@@ -1,7 +1,7 @@
 import { BaseRestController } from '../../../../../lib/node';
 import {
   ListTodoRestRequest,
-  ListTodoRestRequestResponse
+  ListTodoRestRequestResponse,
 } from '../../../shared';
 import { ListTodoService } from '../service/list-todo.service';
 

@@ -1,11 +1,12 @@
 import {
-  BaseRestControllerService, InternalServerErrorException,
-  throwOnMongoBuilderQueryResultError
+  BaseRestControllerService,
+  InternalServerErrorException,
+  throwOnMongoBuilderQueryResultError,
 } from '../../../../../lib/node';
-import { RestoreTodoRestRequest, TodoModel } from '../../../shared';
+import { TodoModel, UpdateTodoRestRequest } from '../../../shared';
 
-export class RestoreTodoService extends BaseRestControllerService<
-  typeof RestoreTodoRestRequest
+export class UpdateTodoService extends BaseRestControllerService<
+  typeof UpdateTodoRestRequest
 > {
   public async exec() {
     if (!this.req.params.id) {
@@ -15,7 +16,8 @@ export class RestoreTodoService extends BaseRestControllerService<
     const res = await TodoModel()
       .createQueryBuilder()
       .filterObjectId(this.req.params.id)
-      .restore();
+      .values(this.req.body)
+      .update();
     throwOnMongoBuilderQueryResultError(res);
 
     return res.data;

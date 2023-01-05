@@ -10,6 +10,10 @@ export class AppEnvironment {
 
   public readonly bootstrapOptions!: AppBootstrapOptions;
 
+  public get isProduction() {
+    return this.NODE_ENV === 'production';
+  }
+
   public get isDevelopment() {
     return this.NODE_ENV === 'development';
   }
